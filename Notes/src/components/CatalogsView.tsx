@@ -40,9 +40,9 @@ export default class CatalogsView extends React.Component<CatalogsViewProps, Cat
     }
 
     render() {
-        const {catalogs} = this.props;
-        return <div className="groups-container">
-            <table className="groups-table">
+        const {catalogs=[] as [Catalog]} = this.props;
+        return <div className="catalog-container">
+            <table className="catalog-table">
                 <thead>
                     <tr>
                         <th>Katalogi</th>
@@ -58,8 +58,8 @@ export default class CatalogsView extends React.Component<CatalogsViewProps, Cat
                 )}
                 </tbody>
             </table>
-            <div className="add-group">
-                <input type="text" onChange={this.setNewCatalogName} />
+            <div className="add-catalog">
+                <input type="text" onChange={(e) => this.setNewCatalogName(e)} />
                 <button onClick={() => this.onAddCatalog()}>Dodaj</button>
             </div>
         </div>

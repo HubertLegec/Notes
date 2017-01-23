@@ -1,17 +1,16 @@
 import * as React from 'react';
 import Note from "../model/Note";
 import * as _ from 'lodash';
+import DataStorage, {storage} from "../model/DataStorage";
 
 interface NoteViewProps {
-    note: Note,
-    onAbort: () => void,
-    onSave: (note: Note) => void
 }
 
 interface NoteViewState {
     title: string,
     content: string,
-    date: Date
+    date: Date,
+    storage:DataStorage
 }
 
 export default class NoteView extends React.Component<NoteViewProps, NoteViewState> {
@@ -21,9 +20,9 @@ export default class NoteView extends React.Component<NoteViewProps, NoteViewSta
         this.state = {
             title: "",
             content: "",
-            date: new Date()
+            date: new Date(),
+            storage
         };
-
     }
 
     private setTitle(e:any) {
@@ -41,11 +40,13 @@ export default class NoteView extends React.Component<NoteViewProps, NoteViewSta
         note.title = this.state.title;
         note.content = this.state.content;
         note.date = this.state.date;
-        this.props.onSave(note);
+        const storage = this.state.storage;
+        storage.addNote(note, 1);
+        this.setState(_.assign({}, this.state, {storage}))
     }
 
     private onAbort() {
-        this.props.onAbort();
+        window.location.href = "/";
     }
 
     render() {

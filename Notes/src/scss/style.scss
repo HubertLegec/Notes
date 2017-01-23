@@ -1,0 +1,58 @@
+header {
+  height: 7vh;
+  padding: 20px;
+  font-size: 2rem;
+  background: darkgray;
+
+  a:-webkit-any-link {
+    color: white;
+    text-decoration: none;
+    font-size: 3rem;
+    font-family: Helvetica;
+  }
+}
+
+.app-content {
+  display: block;
+
+  .main-page {
+    width: 100%;
+    display: block;
+    float: left;
+    min-height: 80vh;
+
+    .catalog-container {
+      width: 30%;
+      float: left;
+      display: block;
+      min-height:80vh;
+      background: #2a3b8b;
+      color: white;
+
+      .catalog-table {
+        min-height: 74vh;
+      }
+
+      .add-catalog {
+        height: 6vh;
+        padding: 5px;
+      }
+    }
+
+    .note-list {
+      width: 70%;
+      float: left;
+      display: block;
+      min-height: 80vh;
+      background: #b0c7e6;
+
+      table {
+        width: 100%;
+        min-height: 60vh;
+        margin: 10px;
+      }
+    }
+  }
+
+
+}

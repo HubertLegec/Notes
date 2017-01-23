@@ -1,9 +1,10 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import Layout from './components/Layout';
+import AppRoutes from "./components/AppRoutes";
+import './scss/style.scss';
 
 
 ReactDOM.render(
-    <Layout />,
+    <AppRoutes />,
     document.getElementById("root")
 );

@@ -1,4 +1,6 @@
-var path = require("path");
+const path = require("path");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const autoprefixer = require('autoprefixer');
 
 var config = {
     /*
@@ -26,6 +28,14 @@ var config = {
         extensions: ["", ".ts", ".tsx", ".js"]
     },
 
+    plugins: [
+      new ExtractTextPlugin("[name].css", {allChunks: true})
+    ],
+
+    postcss() {
+        return [autoprefixer];
+    },
+
     module: {
         /*
          * Each loader needs an associated Regex test that goes through each
@@ -38,6 +48,11 @@ var config = {
             {
                 test: /\.tsx?$/,
                 loader: "ts-loader",
+                exclude: /node_modules/
+            },
+            {
+                test: /\.scss$/,
+                loader: ExtractTextPlugin.extract(['css', 'postcss!sass']),
                 exclude: /node_modules/
             }
         ]
