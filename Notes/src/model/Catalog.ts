@@ -3,9 +3,18 @@ import * as _ from 'lodash';
 
 
 export default class Catalog {
+    private _id: number;
     private _name: string;
     private _notes: [Note] = [] as [Note];
 
+
+    get id(): number {
+        return this._id;
+    }
+
+    set id(value: number) {
+        this._id = value;
+    }
 
     get name(): string {
         return this._name;
