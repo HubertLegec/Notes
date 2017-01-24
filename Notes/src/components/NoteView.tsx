@@ -2,6 +2,7 @@ import * as React from 'react';
 import Note from "../model/Note";
 import * as _ from 'lodash';
 import DataStorage, {storage} from "../model/DataStorage";
+import {Link} from "react-router";
 
 interface NoteViewProps {
 }
@@ -45,12 +46,12 @@ export default class NoteView extends React.Component<NoteViewProps, NoteViewSta
         this.setState(_.assign({}, this.state, {storage}))
     }
 
-    private onAbort() {
-        window.location.href = "/";
-    }
-
     render() {
         return <div className="note-view">
+            <div className="note-view-header">
+                <button><Link to="/">Anuluj</Link></button>
+                <button onClick={() => this.onSave()}>Zapisz</button>
+            </div>
             <input type="text" value={this.state.title} onChange={this.setTitle} />
             <textarea value={this.state.content} onChange={this.setContent} />
         </div>
