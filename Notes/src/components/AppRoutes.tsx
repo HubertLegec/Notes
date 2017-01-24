@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Route, IndexRoute, Router} from 'react-router'
 import Layout from "./Layout";
 import MainPage from "./MainPage";
-import NoteView from "./NoteView";
+import {NoteView} from "./NoteView";
 import {history} from './store';
 
 

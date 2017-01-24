@@ -24,15 +24,25 @@ const catalogReducer = function (state = initialNoteState, action:any) {
         case 'SELECT_NOTE':
             return _.assign({}, state, {selectedNote: action.note});
         case 'SELECT_CATALOG':
-            return _.assign({}, state, {selectedCatalog: action.catalog});
+            const selectedCat = action.catalog === state.selectedCatalog ? undefined : action.catalog;
+            return _.assign({}, state, {selectedCatalog: selectedCat});
         case 'ADD_CATALOG':
             const id = findNewCatalogId(state.catalogs);
             const catalog = action.catalog;
             catalog.id = id;
             return _.assign({}, state, {catalogs: _.concat(state.catalogs, catalog)});
         case 'REMOVE_CATALOG':
+            const selectedCatalog = action.catalog === state.selectedCatalog ? undefined : state.selectedCatalog;
             const updatedCatalogs = _.filter(state.catalogs, (c:Catalog) => c.id != action.catalog);
-            return _.assign({}, state, {catalogs: updatedCatalogs});
+            return _.assign({}, state, {catalogs: updatedCatalogs, selectedCatalog});
+        case 'SAVE_NOTE':
+            const catalogs = state.catalogs;
+            saveNote(action.note, state.selectedCatalog, catalogs);
+            return _.assign({}, state, {catalogs});
+        case 'REMOVE_NOTE':
+            const cat = state.catalogs;
+            deleteNote(action.note, state.selectedCatalog, cat);
+            return _.assign({}, state, {catalogs});
     }
     return state;
 };
@@ -53,17 +63,10 @@ export const store = createStore(reducer, compose(
 
 export const history = syncHistoryWithStore(historyType, store);
 
-function addNote(note:Note, catalogId:number): boolean {
-    const catalog = _.find(this._catalogs, (c:Catalog) => c.id === catalogId);
-    if (catalog == undefined) {
-        return false;
-    }
-    note.id = this.findNewNoteId();
-    catalog.addNote(note);
-}
 
-function deleteNote(noteId:number, catalogId:number) {
-    const catalog = _.find(this._catalogs, (c:Catalog) => c.id === catalogId);
+
+function deleteNote(noteId:number, catalogId:number, catalogs: [Catalog]) {
+    const catalog = _.find(catalogs, (c:Catalog) => c.id === catalogId);
     catalog.removeNote(noteId);
 }
 
@@ -77,8 +80,24 @@ function findNewNoteId(catalogs: [Catalog]):number {
     const ids = _.chain(catalogs)
         .map((c:Catalog) => c.notes)
         .flatten()
-        .map((n:Note) => n.id)
+        .map((n:Note) => n.noteId)
         .value();
     const maxId = _.max(ids);
-    return maxId == undefined ? 0 : maxId + 1;
+    return _.isFinite(maxId) ? maxId + 1 : 0;
+}
+function saveNote(note: Note, catalogId:number, catalogs: [Catalog]): boolean {
+    console.log('save note', note);
+    const catalog = _.find(catalogs, (c:Catalog) => c.id === catalogId);
+    if (catalog == undefined) {
+        return false;
+    }
+    if (_.isFinite(note.noteId)) {
+        const oldNote = _.find(catalog.notes, (n:Note) => n.noteId == note.noteId);
+        oldNote.title = note.title;
+        oldNote.content = note.content;
+        oldNote.date = note.date;
+    } else {
+        note.noteId = findNewNoteId(catalogs);
+        catalog.addNote(note);
+    }
 }

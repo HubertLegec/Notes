@@ -34,7 +34,7 @@ export default class Catalog {
     }
 
     removeNote(noteId: number) {
-        _.remove(this._notes, (n:Note) => n.id == noteId);
+        _.remove(this._notes, (n:Note) => n.noteId == noteId);
     }
 }
 

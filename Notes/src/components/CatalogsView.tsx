@@ -57,7 +57,7 @@ class CatalogsViewUI extends React.Component<CatalogsViewProps, CatalogsViewStat
                 </thead>
                 <tbody>
                 {catalogs.map((catalog, idx) =>
-                    <tr onClick={() => this.props.onCatalogClick(catalog.id)}>
+                    <tr key={idx} onClick={() => this.props.onCatalogClick(catalog.id)}>
                         <td>{catalog.name}</td>
                         <td onClick={() => this.props.removeCatalog(catalog.id)}>remove</td>
                     </tr>
