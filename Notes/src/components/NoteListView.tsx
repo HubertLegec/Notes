@@ -9,7 +9,8 @@ import {push} from 'react-router-redux';
 
 interface NoteListViewDataProps {
     notes: [Note]
-    categorySelected: boolean
+    categorySelected: boolean,
+    notesSize: number
 }
 
 interface NoteListEventProps {
@@ -37,30 +38,28 @@ export class NoteListViewUI extends React.Component<NoteListViewProps, NoteListV
         this.setState(_.assign({}, this.state, {filter: newVal}));
     }
 
-
     render() {
         const {onClick, onDelete, categorySelected, notes} = this.props;
-
         const visibleNotes = _.filter(
             notes,
             (n: Note) => _.includes(_.toLower(n.title), _.toLower(this.state.filter))
         );
-
+        console.log('notesIn', notes, visibleNotes);
         return categorySelected ?
-            <div className="note-list">
-                <div className="note-list-header">
-                    <div>Filtruj</div>
-                    <input type="text" onChange={(e) => this.onFilterChange(e)}/>
-                    <div>
+            <div className="note-list col-sm-8">
+                <div className="note-list-header row">
+                    <div className="col-sm-2">Filtruj</div>
+                    <input className="col-sm-6" type="text" onChange={(e) => this.onFilterChange(e)}/>
+                    <div className="col-sm-4 add-note-container">
                         <button><Link to="note">Dodaj</Link></button>
                     </div>
                 </div>
-                <table>
+                <table className="table table-stripped table-hover">
                     <thead>
                     <tr>
-                        <th>Tytul</th>
-                        <th>Data utworzenia</th>
-                        <th></th>
+                        <th className="col-sm-8">Tytuł</th>
+                        <th className="col-sm-3">Data</th>
+                        <th className="col-sm-1"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -70,18 +69,19 @@ export class NoteListViewUI extends React.Component<NoteListViewProps, NoteListV
                     </tbody>
                 </table>
             </div> :
-            <div className="note-list-placeholder">
+            <div className="note-list-placeholder col-sm-8">
                 <div>Zaznacz katalog</div>
             </div>
     }
 }
 
 function mapStateToProps(state: any): NoteListViewDataProps {
-    const catalog = _.find(state.catalogs.catalogs, (c:Catalog) => c.id === state.catalogs.selectedCatalog);
-    console.log('catalog', catalog, state.catalogs.selectedCatalog);
+    const catalog = _.find(state.catalogs.catalogs, (c: Catalog) => c.id === state.catalogs.selectedCatalog);
+    const notes = _.get(catalog, ['notes'], [] as [Note]);
     return {
-        notes: catalog ? catalog.notes : [] as [Note],
-        categorySelected: _.isFinite(state.catalogs.selectedCatalog)
+        notes,
+        categorySelected: _.isFinite(state.catalogs.selectedCatalog),
+        notesSize: notes.length
     };
 }
 

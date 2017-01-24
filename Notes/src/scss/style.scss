@@ -1,7 +1,7 @@
 header {
   height: 7vh;
-  padding: 20px;
-  font-size: 2rem;
+  padding: 10px;
+  font-size: 1.5em;
   background: darkgray;
 
   a:-webkit-any-link {
@@ -22,40 +22,62 @@ header {
     min-height: 80vh;
 
     .catalog-container {
-      width: 30%;
       float: left;
       display: block;
-      min-height:80vh;
+      min-height: 80vh;
       background: #2a3b8b;
       color: white;
 
-      .catalog-table {
-        min-height: 74vh;
-      }
-
       .add-catalog {
         height: 6vh;
-        padding: 5px;
+        padding: 10px;
+        color: black;
+
+        .add-cat-button {
+          margin-left: 10px;
+        }
+      }
+
+      .catalog-table {
+        tbody {
+          tr:hover {
+            color: black;
+          }
+        }
       }
     }
 
     .note-list {
-      width: 70%;
       float: left;
       display: block;
       min-height: 80vh;
       background: #b0c7e6;
 
       .note-list-header {
-        height: 10vh;
+        height: 6vh;
         background: lightgray;
+        padding: 10px;
+
+        .add-note-container {
+          text-align: right;
+        }
       }
 
       table {
         width: 100%;
-        min-height: 60vh;
         margin: 10px;
       }
+    }
+
+    .note-list-placeholder {
+      float: left;
+      display: block;
+      min-height: 80vh;
+      background: #b0c7e6;
+      text-align: center;
+      font-size: 1.5em;
+      color: white;
+      padding: 10vh;
     }
   }
 
@@ -67,8 +89,57 @@ header {
     background: #b0c7e6;
 
     .note-view-header {
-      height: 10vh;
+      height: 6vh;
       background: lightgray;
+      text-align: right;
+      padding: 10px 20px;
+
+      .cancel-button {
+        margin-right: 30px;
+      }
+
+    }
+
+    .title-row {
+      height: 6vh;
+      margin-top: 20px;
+      padding: 20px;
+
+      .title-name {
+        font-size: 1.3em;
+      }
+
+    }
+
+    .content-row {
+      height: 68vh;
+      padding: 20px;
+
+      .note-content {
+        height: 90%;
+        width: 100%;
+      }
     }
   }
+
+  .glyphicon:hover {
+    cursor: hand;
+  }
+
+  button {
+    text-decoration: none;
+    color: black;
+
+    :hover {
+      cursor: hand;
+    }
+  }
+}
+
+footer {
+  background: darkgray;
+  color: white;
+  padding: 20px;
+  height: 7vh;
+  font-size: 1.1em;
 }

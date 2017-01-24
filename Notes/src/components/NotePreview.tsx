@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Note from "../model/Note";
+import * as moment from 'moment';
 
 
 interface NotePreviewProps {
@@ -12,9 +13,12 @@ export default class NotePreview extends React.Component<NotePreviewProps, {}> {
     render() {
         const {note, onClick, onDelete} = this.props;
         return <tr onClick={() => onClick(note.noteId)}>
-            <td>{note.title}</td>
-            <td>{note.date.toISOString().split('T')[0]}</td>
-            <td onClick={() => onDelete(note.noteId)}>remove</td>
+            <td className="sm-col-8">{note.title}</td>
+            <td className="sm-col-2">{moment(note.date).format('DD/MM/YYYY HH:mm')}</td>
+            <td className="sm-col-2 glyphicon glyphicon-trash" onClick={(e) => {
+                e.stopPropagation();
+                onDelete(note.noteId);
+            }} />
         </tr>
     }
 }

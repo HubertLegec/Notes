@@ -33,6 +33,7 @@ class CatalogsViewUI extends React.Component<CatalogsViewProps, CatalogsViewStat
     private onAddCatalog(){
         let catalog = new Catalog();
         catalog.name = this.state.newCatalogName;
+        this.setState(_.assign({}, this.state, {newCatalogName: ""}));
         this.props.addCatalog(catalog);
     }
 
@@ -43,12 +44,12 @@ class CatalogsViewUI extends React.Component<CatalogsViewProps, CatalogsViewStat
 
     render() {
         const {catalogs=[] as [Catalog]} = this.props;
-        return <div className="catalog-container">
-            <div className="add-catalog">
-                <input type="text" onChange={(e) => this.setNewCatalogName(e)} />
-                <button onClick={() => this.onAddCatalog()}>Dodaj</button>
+        return <div className="catalog-container col-sm-4">
+            <div className="add-catalog row">
+                <input value={this.state.newCatalogName} className="col-sm-8" type="text" onChange={(e) => this.setNewCatalogName(e)} />
+                <button className="add-cat-button col-sm-3" onClick={() => this.onAddCatalog()} disabled={_.isEmpty(this.state.newCatalogName)}>Dodaj</button>
             </div>
-            <table className="catalog-table">
+            <table className="catalog-table table table-stripped table-hover">
                 <thead>
                     <tr>
                         <th>Katalogi</th>
@@ -58,8 +59,10 @@ class CatalogsViewUI extends React.Component<CatalogsViewProps, CatalogsViewStat
                 <tbody>
                 {catalogs.map((catalog, idx) =>
                     <tr key={idx} onClick={() => this.props.onCatalogClick(catalog.id)}>
-                        <td>{catalog.name}</td>
-                        <td onClick={() => this.props.removeCatalog(catalog.id)}>remove</td>
+                        <td className="col-sm-11">{catalog.name}</td>
+                        <td className="col-sm-1 glyphicon glyphicon-trash" onClick={(e) => {
+                            e.stopPropagation();
+                            this.props.removeCatalog(catalog.id);}} />
                     </tr>
                 )}
                 </tbody>

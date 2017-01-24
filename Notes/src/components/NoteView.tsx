@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Note from "../model/Note";
 import * as _ from 'lodash';
-import {Link} from "react-router";
 import {connect} from "react-redux";
 import {push} from 'react-router-redux';
 import Catalog from "../model/Catalog";
@@ -13,6 +12,7 @@ interface NoteViewDataProps {
 
 interface NoteViewEventProps {
     onSave: (note: Note) => void
+    onCancel: () => void
 }
 
 type NoteViewProps = NoteViewDataProps & NoteViewEventProps;
@@ -20,7 +20,8 @@ type NoteViewProps = NoteViewDataProps & NoteViewEventProps;
 interface NoteViewState {
     title: string,
     content: string,
-    date: Date
+    date: Date,
+    id: number
 }
 
 class NoteViewUI extends React.Component<NoteViewProps, NoteViewState> {
@@ -30,15 +31,18 @@ class NoteViewUI extends React.Component<NoteViewProps, NoteViewState> {
         let title = "";
         let content = "";
         let date = new Date();
+        let id = undefined;
         if (props.note != undefined) {
             title = props.note.title;
             content = props.note.content;
             date = props.note.date;
+            id = props.note.noteId;
         }
         this.state = {
             title,
             content,
-            date
+            date,
+            id
         };
     }
 
@@ -57,26 +61,41 @@ class NoteViewUI extends React.Component<NoteViewProps, NoteViewState> {
         note.title = this.state.title;
         note.content = this.state.content;
         note.date = this.state.date;
+        note.noteId = this.state.id;
+        this.setState(_.assign({}, this.state, {id: undefined, title: "", content: "", date: undefined}));
         this.props.onSave(note);
     }
 
+    private onCancel() {
+        this.setState(_.assign({}, this.state, {id: undefined, title: "", content: "", date: undefined}));
+        this.props.onCancel();
+    }
+
     render() {
-        return <div className="note-view">
+        return <div className="note-view col-sm-12">
             <div className="note-view-header">
-                <button><Link to="/">Anuluj</Link></button>
-                <button onClick={() => this.onSave()}>Zapisz</button>
+                <button className="cancel-button" onClick={() => this.onCancel()}>Anuluj</button>
+                <button onClick={() => this.onSave()}
+                        disabled={_.isEmpty(this.state.title) || _.isEmpty(this.state.content)}>Zapisz
+                </button>
             </div>
-            <input type="text" value={this.state.title} onChange={this.setTitle.bind(this)}/>
-            <textarea value={this.state.content} onChange={this.setContent.bind(this)}/>
+            <div className="title-row">
+                <div className="col-sm-2 title-name">Tytuł</div>
+                <input className="col-sm-10" type="text" value={this.state.title}
+                       onChange={this.setTitle.bind(this)}/>
+            </div>
+            <div className="content-row">
+                <textarea className="note-content" value={this.state.content} onChange={this.setContent.bind(this)}/>
+            </div>
         </div>
     }
 }
 
 function mapStateToProps(state: any): NoteViewDataProps {
     const note = _(state.catalogs.catalogs)
-        .map((c:Catalog) => c.notes)
+        .map((c: Catalog) => c.notes)
         .flatten()
-        .filter((n:Note) => n.noteId == state.catalogs.selectedNote)
+        .filter((n: Note) => n.noteId == state.catalogs.selectedNote)
         .head() as Note;
     return {
         selectedCategory: state.catalogs.selectedCatalog,
@@ -90,6 +109,12 @@ function mapDispatchToProps(dispatch: any): NoteViewEventProps {
             dispatch({
                 type: "SAVE_NOTE",
                 note
+            });
+            dispatch(push('/'))
+        },
+        onCancel() {
+            dispatch({
+                type: "SELECT_NOTE"
             });
             dispatch(push('/'))
         }

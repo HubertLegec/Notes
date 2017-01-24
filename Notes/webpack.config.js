@@ -51,6 +51,11 @@ var config = {
                 exclude: /node_modules/
             },
             {
+                test: /\.css$/,
+                loader: ExtractTextPlugin.extract(['css', 'postcss']),
+                exclude: /node_modules/
+            },
+            {
                 test: /\.scss$/,
                 loader: ExtractTextPlugin.extract(['css', 'postcss!sass']),
                 exclude: /node_modules/

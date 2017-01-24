@@ -42,7 +42,7 @@ const catalogReducer = function (state = initialNoteState, action:any) {
         case 'REMOVE_NOTE':
             const cat = state.catalogs;
             deleteNote(action.note, state.selectedCatalog, cat);
-            return _.assign({}, state, {catalogs});
+            return _.assign({}, state, {catalogs: cat});
     }
     return state;
 };
@@ -86,7 +86,6 @@ function findNewNoteId(catalogs: [Catalog]):number {
     return _.isFinite(maxId) ? maxId + 1 : 0;
 }
 function saveNote(note: Note, catalogId:number, catalogs: [Catalog]): boolean {
-    console.log('save note', note);
     const catalog = _.find(catalogs, (c:Catalog) => c.id === catalogId);
     if (catalog == undefined) {
         return false;
