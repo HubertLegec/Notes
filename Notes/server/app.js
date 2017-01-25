@@ -25,7 +25,6 @@ app.get('note', (req, res) => {
 });
 
 app.get('/catalogs', (req, res) => {
-    console.log('request catalogs');
     getCatalogs(function (catalogs) {
         res.send(catalogs);
     });
@@ -33,9 +32,14 @@ app.get('/catalogs', (req, res) => {
 
 app.post('/catalog', (req, res) => {
     const catalog = req.body;
-    console.log('POST catalog', catalog);
     insertCatalog(catalog);
-    res.send('OK')
+    res.send('OK');
+});
+
+app.delete('/catalog/:id', (req, res) => {
+    const id = req.params.id;
+    deleteCatalog(id);
+    res.send('OK');
 });
 
 module.exports = app;
@@ -63,6 +67,18 @@ const getCatalogs = function(callback) {
             db.close();
             callback(catalogs);
         });
+    });
+};
+
+const deleteCatalog = function (id) {
+    MongoClient.connect(connectionString, function(err, db) {
+        console.log("Connected successfully to server");
+        console.log("err", err);
+
+        const collection = db.collection('catalogs');
+        collection.deleteOne({id: Number.parseInt(id)}, (err, res) => {
+            console.log('err', err);
+            db.close()});
     });
 };
 

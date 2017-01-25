@@ -35,6 +35,7 @@ const catalogReducer = function (state = initialNoteState, action:any) {
         case 'REMOVE_CATALOG':
             const selectedCatalog = action.catalog === state.selectedCatalog ? undefined : state.selectedCatalog;
             const updatedCatalogs = _.filter(state.catalogs, (c:Catalog) => c.id != action.catalog);
+            deleteCatalog(action.catalog);
             return _.assign({}, state, {catalogs: updatedCatalogs, selectedCatalog});
         case 'SAVE_NOTE':
             const catalogs = state.catalogs;
@@ -113,5 +114,11 @@ function saveCatalogInDb(catalog:Catalog) {
         mode: 'cors',
         cache: 'default',
         body: JSON.stringify(catalog)
-    } as any);
+    });
+}
+
+function deleteCatalog(id:number) {
+    fetch('catalog/' + id, {
+        method: 'DELETE'
+    });
 }
