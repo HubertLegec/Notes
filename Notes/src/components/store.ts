@@ -30,6 +30,7 @@ const catalogReducer = function (state = initialNoteState, action:any) {
             const id = findNewCatalogId(state.catalogs);
             const catalog = action.catalog;
             catalog.id = id;
+            saveCatalogInDb(catalog);
             return _.assign({}, state, {catalogs: _.concat(state.catalogs, catalog)});
         case 'REMOVE_CATALOG':
             const selectedCatalog = action.catalog === state.selectedCatalog ? undefined : state.selectedCatalog;
@@ -43,6 +44,8 @@ const catalogReducer = function (state = initialNoteState, action:any) {
             const cat = state.catalogs;
             deleteNote(action.note, state.selectedCatalog, cat);
             return _.assign({}, state, {catalogs: cat});
+        case 'SET_CATALOGS':
+            return _.assign({}, state, {catalogs: action.catalogs, selectedCatalog: undefined, selectedNote: undefined});
     }
     return state;
 };
@@ -99,4 +102,16 @@ function saveNote(note: Note, catalogId:number, catalogs: [Catalog]): boolean {
         note.noteId = findNewNoteId(catalogs);
         catalog.addNote(note);
     }
+}
+
+function saveCatalogInDb(catalog:Catalog) {
+    var myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    fetch('catalog', {
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'default',
+        body: JSON.stringify(catalog)
+    } as any);
 }

@@ -44,7 +44,6 @@ export class NoteListViewUI extends React.Component<NoteListViewProps, NoteListV
             notes,
             (n: Note) => _.includes(_.toLower(n.title), _.toLower(this.state.filter))
         );
-        console.log('notesIn', notes, visibleNotes);
         return categorySelected ?
             <div className="note-list col-sm-8">
                 <div className="note-list-header row">

@@ -46,21 +46,34 @@ var config = {
          */
         loaders: [
             {
-                test: /\.tsx?$/,
-                loader: "ts-loader",
-                exclude: /node_modules/
+                test: /\.json$/,
+                loader: "json-loader"
             },
             {
-                test: /\.css$/,
-                loader: ExtractTextPlugin.extract(['css', 'postcss']),
-                exclude: /node_modules/
+                test: /\.tsx?$/,
+                loader: "ts-loader"
             },
             {
                 test: /\.scss$/,
-                loader: ExtractTextPlugin.extract(['css', 'postcss!sass']),
-                exclude: /node_modules/
+                loader: ExtractTextPlugin.extract(['css', 'postcss!sass'])
+            },
+            {
+                test: /\.node$/,
+                loader: 'node-loader'
+            }
+        ],
+        preLoaders: [
+            {
+                test: /\.js$/,
+                loader: 'source-map-loader'
             }
         ]
+    },
+    node: {
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty',
+        module: 'empty'
     }
 };
 
