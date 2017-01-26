@@ -3,6 +3,7 @@ import {Link} from 'react-router'
 import {connect} from "react-redux";
 import {GlobalState} from "./store";
 import {} from 'fetcj'
+import Catalog from "../model/Catalog";
 
 interface LayoutDataProps {
 
@@ -43,7 +44,7 @@ function mapDispatchToProps(dispatch:any) : LayoutActionProps {
         onComponentMount() {
             fetch('catalogs')
                 .then((response:any) => response.json())
-                .then((data:any) => {
+                .then((data:[Catalog]) => {
                     dispatch({
                         type: 'SET_CATALOGS',
                         catalogs: data

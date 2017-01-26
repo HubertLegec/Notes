@@ -39,11 +39,13 @@ const catalogReducer = function (state = initialNoteState, action:any) {
             return _.assign({}, state, {catalogs: updatedCatalogs, selectedCatalog});
         case 'SAVE_NOTE':
             const catalogs = state.catalogs;
-            saveNote(action.note, state.selectedCatalog, catalogs);
+            const updCt = saveNote(action.note, state.selectedCatalog, catalogs);
+            updateNotes(state.selectedCatalog, updCt.notes);
             return _.assign({}, state, {catalogs});
         case 'REMOVE_NOTE':
             const cat = state.catalogs;
-            deleteNote(action.note, state.selectedCatalog, cat);
+            const updatedCat = deleteNote(action.note, state.selectedCatalog, cat);
+            updateNotes(state.selectedCatalog, updatedCat.notes);
             return _.assign({}, state, {catalogs: cat});
         case 'SET_CATALOGS':
             return _.assign({}, state, {catalogs: action.catalogs, selectedCatalog: undefined, selectedNote: undefined});
@@ -69,9 +71,10 @@ export const history = syncHistoryWithStore(historyType, store);
 
 
 
-function deleteNote(noteId:number, catalogId:number, catalogs: [Catalog]) {
+function deleteNote(noteId:number, catalogId:number, catalogs: [Catalog]) : Catalog {
     const catalog = _.find(catalogs, (c:Catalog) => c.id === catalogId);
-    catalog.removeNote(noteId);
+    _.remove(catalog.notes, (n:Note) => n.noteId == noteId);
+    return catalog;
 }
 
 function findNewCatalogId(catalogs:[Catalog]):number {
@@ -89,10 +92,10 @@ function findNewNoteId(catalogs: [Catalog]):number {
     const maxId = _.max(ids);
     return _.isFinite(maxId) ? maxId + 1 : 0;
 }
-function saveNote(note: Note, catalogId:number, catalogs: [Catalog]): boolean {
+function saveNote(note: Note, catalogId:number, catalogs: [Catalog]): Catalog {
     const catalog = _.find(catalogs, (c:Catalog) => c.id === catalogId);
     if (catalog == undefined) {
-        return false;
+        return undefined;
     }
     if (_.isFinite(note.noteId)) {
         const oldNote = _.find(catalog.notes, (n:Note) => n.noteId == note.noteId);
@@ -101,8 +104,10 @@ function saveNote(note: Note, catalogId:number, catalogs: [Catalog]): boolean {
         oldNote.date = note.date;
     } else {
         note.noteId = findNewNoteId(catalogs);
-        catalog.addNote(note);
+        console.log('catalog', catalog);
+        catalog.notes.push(note);
     }
+    return catalog;
 }
 
 function saveCatalogInDb(catalog:Catalog) {
@@ -121,4 +126,16 @@ function deleteCatalog(id:number) {
     fetch('catalog/' + id, {
         method: 'DELETE'
     });
+}
+
+function updateNotes(id:number, notes:[Note]) {
+    var myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    fetch('notes', {
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'default',
+        body: JSON.stringify({notes, id})
+    })
 }
